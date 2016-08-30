@@ -23,6 +23,9 @@ public class Player {
 		estaJogando = true;
 		fichas = _fichas;
 	}
+	public Hand getHand() {
+		return mao;
+	}
 	public void setCartas(String _card1, String _card2) {
 		mao = new Hand(_card1, _card2);
 	}

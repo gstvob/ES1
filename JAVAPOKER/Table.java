@@ -1,16 +1,10 @@
 package pkg1;
 
-import java.awt.Color;
-import java.awt.Component;
-
-import javax.swing.*;
-
-@SuppressWarnings("serial")
 public class Table {
 	
 	private int playerNumber;
 	private int chipsOnTable;
-	
+	private Deck deck;
 	private String[] cardsInTable = new String[5];
 	private String[] players;
 	
@@ -20,24 +14,22 @@ public class Table {
 	
 	public Table(int _botsNumber, int _chipAmmount) {
 		playerNumber = _botsNumber + 1;
+		deck = new Deck();
 		players = new String[playerNumber];
 		bots = new Bot[_botsNumber];
-		
-		sitPlayersOnTable(_chipAmmount);
 	}
-	public void sitPlayersOnTable(int chipAmmount) {
-		
-		mainPlayer = new Player(chipAmmount);
-		
-		for (int i = 0; i < bots.length; i++) {
-			bots[i] = new Bot(chipAmmount);
-		}
+	public Deck getDeck() {
+		return deck;
 	}
-	
+	public void setPlayer(Player player) {
+		mainPlayer = player;
+	}
+	public void setBots(Bot[] bots) {
+		this.bots = bots;
+	}
 	public Player getPlayer() {
 		return mainPlayer;
 	}
-	
 	public Bot getBot(int index) {
 		return bots[index];
 	}
