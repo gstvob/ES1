@@ -7,7 +7,6 @@ public class Hand extends Deck{
 	public Hand(String _card1, String _card2) {
 		hand[0] = _card1;
 		hand[1] = _card2;
-		
 	}
 	
 	public String getFirstCard() {
