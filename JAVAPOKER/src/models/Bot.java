@@ -12,7 +12,7 @@ public class Bot extends Player{
 	}
 	
 	public int escolherJogada() {
-		return 2;
+		return 1;
 	}
 
 	public int getFichas() {

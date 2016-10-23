@@ -57,23 +57,19 @@ public class PlayerOptions implements ActionListener{
 	public void actionPerformed(ActionEvent arg0) {
 		if (arg0.getSource() == passar) {
 			clearOptions();
-			gmgr.Interrupt();
 		} else if (arg0.getSource() == apostar) {
 			clearOptions();
 			int bet = Integer.parseInt(aposta.getText());
 			gmgr.setPlay(0,bet);
-			gmgr.Interrupt();
 		} else if (arg0.getSource() == desistir) {
 			clearOptions();
 			panel.setBackground(Color.WHITE);
 			gmgr.setPlayerFold(true);
 			gmgr.setRunning(false);
 			gmgr.PlayerDesistiu();
-			gmgr.Interrupt();
 		} else if (arg0.getSource() == pagar) {
 			clearOptions();
 			gmgr.setPlay(1,0);
-			gmgr.Interrupt();
 		}
 	}
 	

@@ -1,0 +1,34 @@
+Escopo : Simulação de torneio de poker.
+
+Nível : Meta do usuário.
+
+Stakeholders e seus interesses :
+
+Usuário : Deseja criar uma conta e/ou logar no sistema para começar seu torneio, com agilidade e simplicidade.
+
+Pré Condições:
+
+Para criar uma conta, o email e usuário não devem existir.
+Caso o usuário queira logar, ele obviamente precisa ter uma conta já feita.
+
+Pós condições:
+
+Após criar a conta, seus dados serão enviados para o banco de dados, depois disso, o usuário poderá facilmente logar no sistema.
+
+
+Fluxo básico:
+
+AÇÃO DO USUÁRIO: 																		RESPONSABILIDADE DO SISTEMA:
+1. O usuário inicia o programa.
+
+caso o usuário não tenha uma conta ele prossegue para criar uma, 
+caso já tenha, são pulados os passos 2 e 3.
+
+2. O usuário insere seus dados no formulário.
+																			3. O sistema pega as informações e as coloca no banco de dados.
+4. usuário entra no formulário com seu username e senha para logar.
+																			5. O sistema verifica se os dados "batem" no banco de dados.
+
+4-5a - caso os dados entrados correspondam ao que consta no banco de dados o usuário prossegue para começar um novo jogo.
+4-5b - caso os dados entrados não correspondam ao que conta no BD o usuário pode criar uma conta(caso não tenha) ou tentar novamente(em caso de erros de digitação).
+

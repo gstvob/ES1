@@ -6,10 +6,7 @@ public class Player {
 	
 	private boolean isPlaying;
 	
-	private char jogada;
-	
 	private int fichas;
-	private int pontuacao;
 	
 	private int bet;
 	
@@ -17,6 +14,7 @@ public class Player {
 	private String senha;
 	private String email;
 	private String recoverW;
+	
 	private int totalWins;
 	
 	private String cartasNaMesa;
@@ -50,14 +48,8 @@ public class Player {
 	public void addFichas(int value) {
 		fichas+= value;
 	}
-	public char getJogada() {
-		return jogada;
-	}
 	public int getFichas() {
 		return fichas;
-	}
-	public int getPontuacao() {
-		return pontuacao;
 	}
 	public void setConta(String _user, String _pass, String _email, String _recover, int value) {
 		totalWins = value;

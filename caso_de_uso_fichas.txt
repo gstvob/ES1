@@ -1,0 +1,30 @@
+Escopo : Simulação de torneio de poker.
+
+Nível : Sub-função.
+
+Pré Condições:
+
+Todos os jogadores devem ter apostado, pagado ou desistido da mão nessa rodada.
+
+Pós condições:
+
+O sistema pega todas as apostas e adiciona ao "pote" da mesa, no fim de uma mão, o pote vai para o vencedor.
+
+Fluxo básico: 	
+																				
+AÇÃO DO USUÁRIO:
+1. O usuário escolhe a ação apostar ou pagar.
+
+RESPONSABILIDADE DO SISTEMA:
+																									2. O sistema recolhe as fichas que o usuário ou bot apostou e as junta ao pote
+																									3. A vez é passada para o participante da mão imediatamente a esquerda, se for um bot ele faz a sua ação.
+
+ REPETEM-SE OS PASSOS 2 e 3 ATÉ TODOS OS JOGADORES TIVEREM FEITO SUA APOSTA OU DESISTIDO.
+
+4. A o sistema recolhe todas as apostas e as coloca no "pote" da mesa.
+
+
+Extensões:
+
+1-3a: se um bot ou o usuário desistir no meio de uma rodada, ele perde todas as fichas que já tinha e o sistema as coloca no "pote" da mesa.
+ 

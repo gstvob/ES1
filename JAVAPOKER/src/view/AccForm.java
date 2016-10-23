@@ -1,6 +1,8 @@
 package view;
 
 import control.DatabaseAcc;
+import models.Player;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -118,11 +120,11 @@ public class AccForm implements ActionListener {
 				// do somethin somethin (with somethin meaning that proceeds to
 				// login screen and call the database functions).
 				DatabaseAcc accountCreated = new DatabaseAcc();
-				String sql1 = "INSERT INTO contas(usuario, senha, email, recover, vitorias) VALUES('"+fieldUser.getText()+"', '"
-						+fieldPass.getText() + "', '" + fieldEmail.getText() + "', '" + fieldRecoverW.getText() + "', '0')";
+				Player player = new Player();
+				player.setConta(fieldUser.getText(), fieldPass.getText(), fieldEmail.getText(), fieldRecoverW.getText(), 0);
 				try {
 					accountCreated.connect("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/PokerSim", "postgres", "admin");
-					accountCreated.put(sql1);
+					accountCreated.put(player);
 					accountCreated.close();
 				} catch (Exception e) {}
 				panel.removeAll();
