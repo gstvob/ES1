@@ -1,11 +1,16 @@
 package models;
 
-public class Player {
+import java.util.Vector;
+
+import Interfaces.Observer;
+import Interfaces.Subject;
+
+public class Player implements Subject {
 	
 	private Hand mao;
 	
 	private boolean isPlaying;
-	
+	private boolean folded;
 	private int fichas;
 	
 	private int bet;
@@ -18,17 +23,20 @@ public class Player {
 	private int totalWins;
 	
 	private String cartasNaMesa;
-	
-	@SuppressWarnings("unused")
-	private String melhorSeq;
+
+	private Vector<Observer> observers;
 	
 	public Player() {
 		setPlaying(true);
+		folded = false;
+		observers = new Vector<Observer>();
 	}
 	public Player(int _fichas, int wins) {
 		fichas = _fichas;
 		totalWins = wins;
 		bet = 0;
+		folded = false;
+		observers = new Vector<Observer>();
 	}
 	public boolean canPass(int biggestBet) {
 		if (biggestBet <= bet) {
@@ -60,6 +68,13 @@ public class Player {
 	}
 	public int getBet() {
 		return bet;
+	}
+	public void setFold(boolean value) {
+		folded = value;
+		((Observer) observers.elementAt(0)).sendNotify(folded);
+	}
+	public boolean getFold() {
+		return folded;
 	}
 	public int getWins() {
 		return totalWins;
@@ -100,5 +115,10 @@ public class Player {
 	public void setPlaying(boolean isPlaying) {
 		this.isPlaying = isPlaying;
 	}
-	
+	public void setBet(int value) {
+		bet += value;
+	}
+	public void registerInterest(Observer ob) {
+		observers.addElement(ob);
+	}
 }

@@ -9,6 +9,7 @@ public class Bot extends Player{
 	public Bot(int _fichas) {
 		super();
 		setFichas(_fichas);
+		this.setBet(0);
 	}
 	
 	public int escolherJogada() {

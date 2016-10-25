@@ -4,6 +4,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import Interfaces.Observer;
 import models.Bot;
 import models.Player;
 import models.Table;
@@ -18,7 +19,7 @@ import view.TableGUI;
  * se for a vez de um bot ele vai fazer as operações do bot para ele decidir a jogada.
  */
 
-public class GameManager extends Thread{
+public class GameManager extends Thread implements Observer{
 
 	private Bot[] bots;
 	private PlayerOptions player0;
@@ -26,6 +27,9 @@ public class GameManager extends Thread{
 	private int turn;
 	private int play;
 	private int bets;
+	private int apostaram = 0;
+
+	private boolean flop = true;
 	private boolean entrada = true;
 	private boolean playerFold = false;
 	private boolean giveCardTime = true;
@@ -50,12 +54,12 @@ public class GameManager extends Thread{
 		int numeroDeBots = tableG.getBotsNumber();
 		int fichas = tableG.getFichas();
 
-		
+		player.registerInterest(this);
 		bots = new Bot[numeroDeBots];
-		
 		
 		for (int i = 0; i < numeroDeBots; i++) {
 			bots[i] = new Bot(fichas);
+			bots[i].registerInterest(this);
 		}
 
 		player = jogador;
@@ -88,90 +92,38 @@ public class GameManager extends Thread{
 		}
 		tableG.cardsGui(panel,bots.length,player.getHand().getFirstCard(), player.getHand().getSecondCard());
 	}
-	public void run() {
-		while (isRunning) {
-			if (giveCardTime == true) {
-				GiveCards();
-			}
-			while (!roundFinished) {
-				giveCardTime = false;
-				if (isRunning == false) {
-					break;
-				}
-				// esse if serve para cuidar do big e small blind.
-				// se for o inicio de uma rodada, são retiradas fichas do small e do big blind direto e passa a vez para o proximo.
-				
-				if (entrada == true) {
-					int sb;
-					if (turn == 0) {
-						sb = bots.length-1;
-						player.addFichas(-1*blind);
-						bots[sb].addFichas(-1*(blind/2));
-						bets = blind + blind/2;
-					}else {
-						sb = turn-1;
-						if (sb == 0) {
-							player.addFichas(-1*(blind/2));
-							bets = blind*2;
-						} else {
-							bots[sb].addFichas(-1*(blind/2));
-						}
-						bots[bigBlind].addFichas(-1*blind);
-					}
-					turn++;
-					entrada = false;
-				}
-				//Jogada do usuario
-				if (turn == 0) {
-					player0.initComponent(true);
-					panel.updateUI();
-					try {
-						sleep(5000);
-					} catch (InterruptedException e) {
-		
-					}
-					player0.clearOptions();
-					panel.updateUI();
-				//Jogada dos bots.
-				}else {
-					setPlay(bots[turn-1].escolherJogada(),0);
-					try {
-						sleep(5000);
-					} catch (InterruptedException e) {}
-					System.out.println("bot "+turn);
-				}
-				//Aqui se for a vez do participante depois do big blind e todas as apostas já estiverem ok.
-				//Aqui eu vo joga o método pra fazer o flop assim que terminarem as apostas.
-				if (turn == bigBlind+1 && bets%(bots.length+1) == 0) {
-					mesa.setPote(bets);
-					turn = bigBlind;	
-				} else {
-					turn++;
-				}
-				if (turn > bots.length) {
-					turn = 0;
-				}
-			}
-			// aqui tem que fazer as operações depois de trocar o blind certinho e fazer valer o valor de entrada denovo.
-			isRunning = false;
-		}
-	}
-	
 	synchronized private void Play(int bet) {
 		if (play == 0) {
 			if (mesa.getBiggestBet() >= player.getBet()) {
 				this.interrupt();
 				this.notify();
+				apostaram = 0;
+				System.out.println("o jogador aumentou a aposta em "+bet+" fichas");
+				bet = bet + (mesa.getBiggestBet()-player.getBet());
+				player.setBet(bet);
 				setBets(getBets() + bet);
-				player.addFichas(-1*((mesa.getBiggestBet()-player.getBet())+bet));
+				mesa.setBiggestBet(player.getBet());
+				player.addFichas(-1*(bet));
+				System.out.println("Lhe restam: " +player.getFichas());
 			}
 		} else if (play == 1) {
 			if (mesa.getBiggestBet() > player.getBet()){
 				this.interrupt();
 				this.notify();
-				setBets(getBets() + bet);
+				setBets(getBets() + (mesa.getBiggestBet() - player.getBet()));
 				player.addFichas(-1*(mesa.getBiggestBet()-player.getBet()));
+				System.out.println("o jogador pagou agora "+(mesa.getBiggestBet() - player.getBet())+" fichas, lhe restam: " +player.getFichas());
 			}
+		}
+	}
+	
+	public void BotHandler(Bot bot) {
+		if (mesa.getBiggestBet() > bot.getBet()){
+			int bet = mesa.getBiggestBet() - bot.getBet();
+			setBets(getBets() + bet);
+			bot.addFichas(-1*(bet)); 
+			bot.setBet(bet);
+			System.out.println("o participante pagou agora "+bet+"fichas, lhe restam: " +player.getFichas());
 		}
 	}
 	
@@ -216,4 +168,113 @@ public class GameManager extends Thread{
 	public void setBlind(int blind) {
 		this.blind = blind;
 	}
+	public void virarCartas() {
+		if (flop == true) {
+			//flop
+			flop = false;
+			mesa.flop();
+			System.out.println("virou o flop");
+			System.out.println(mesa.getCardsInTable(0) +", "+mesa.getCardsInTable(1)+", "+mesa.getCardsInTable(2));
+		} else {
+			mesa.turnRiver();
+			System.out.println("virou mais uma carta na mesa");
+			if (mesa.getCardsInTable(4) == null) {
+				//turn
+				System.out.println(mesa.getCardsInTable(0) +", "+mesa.getCardsInTable(1)+", "+mesa.getCardsInTable(2)+", " +mesa.getCardsInTable(3));
+			} else {
+				//river
+				System.out.println(mesa.getCardsInTable(0) +", "+mesa.getCardsInTable(1)+", "+mesa.getCardsInTable(2)+", " +mesa.getCardsInTable(3) +", "+mesa.getCardsInTable(4));
+			}
+		}
+	}
+	public void run() {
+		while (isRunning) {
+			if (giveCardTime == true) {
+				GiveCards();
+			}
+			while (!roundFinished) {
+				giveCardTime = false;
+				if (isRunning == false) {
+					break;
+				}
+				// esse if serve para cuidar do big e small blind.
+				// se for o inicio de uma rodada, são retiradas fichas do small e do big blind direto e passa a vez para o proximo.
+				if (entrada == true) {
+					int sb;
+					if (bigBlind == 0) {
+						sb = bots.length-1;
+						player.addFichas(-1*blind);
+						player.setBet(blind);
+						bots[sb].addFichas(-1*(blind/2));
+						bots[sb].setBet(blind/2);
+						System.out.println("o big blind foi setado para o player e o bot "+sb+" é o small blind.");
+						bets = blind + blind/2;
+					}else {
+						sb = bigBlind-1;
+						if (sb == 0) {
+							player.addFichas(-1*(blind/2));
+							player.setBet(blind/2);
+						} else {
+							bots[sb-1].addFichas(-1*(blind/2));
+							bots[sb-1].setBet(blind/2);
+						}
+						bots[bigBlind-1].setBet(blind);
+						bots[bigBlind-1].addFichas(-1*blind);
+						bets = blind+(blind/2);
+					}
+					turn++;
+					System.out.println("total de apostas = "+bets);
+					mesa.setBiggestBet(blind);
+					entrada = false;
+				}
+				//Jogada do usuario
+				if (turn == 0) {
+					player0.initComponent(true);
+					panel.updateUI();
+					try {
+						sleep(5000);
+					} catch (InterruptedException e){}
+					player0.clearOptions();
+					panel.updateUI();
+				//Jogada dos bots.
+				}else {
+					BotHandler(bots[turn-1]);
+					try {
+						sleep(5000);
+					} catch (InterruptedException e) {}
+					System.out.println("bot "+turn);
+				}
+				//Aqui se for a vez do participante depois do big blind e todas as apostas já estiverem ok.
+				//Aqui eu vo joga o método pra fazer o flop assim que terminarem as apostas.
+				apostaram++;
+				if (turn == bigBlind && bets%(bots.length+1) == 0 && apostaram >= bots.length) {
+					mesa.setPote(bets);
+					virarCartas();
+					turn = bigBlind;
+					apostaram = 0;
+				} else {
+					turn++;
+				}
+				if (turn > bots.length) {
+					turn = 0;
+				}
+			}
+			// aqui tem que fazer as operações depois de trocar o blind certinho e fazer valer o valor de entrada denovo.
+			isRunning = false;
+		}
+	}
+	public void sendNotify(boolean saiu) {
+		if (saiu == true) {
+			// significa que o player deu fold então tira as cartas da mão dele.
+			//fazer um método para tirar as cartas dependendo de quem deu o fold é claro.
+			// Esse método vai tar na classe do TableGUI.
+			
+		} else {
+			// significa que o player ta de volta ao jogo então coloca as cartas dele na mão.
+			// quando começar uma nova rodada, os que deram fold vão receber cartas novamente então eles irão chamar aqui denovo.
+		}
+	}
 }
+
+
+

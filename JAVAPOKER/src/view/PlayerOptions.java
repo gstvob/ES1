@@ -23,7 +23,7 @@ public class PlayerOptions implements ActionListener{
 	}
 	public void initComponent(boolean canPass) {
 		passar = new JButton("Passar");
-		apostar = new JButton("Apostar");
+		apostar = new JButton("Aumentar");
 		pagar =  new JButton("Pagar");
 		desistir = new JButton("Desistir");
 		aposta = new JTextField("10");
