@@ -23,7 +23,7 @@ public class HandRanker {
 			return HandRank.ROYAL_FLUSH;
 		} else if (isAStraightFlush(cartas)) {
 			return HandRank.STRAIGHT_FLUSH;
-		} else if (isAFourOfAKing(cartas)) {
+		} else if (isAFourOfAKind(cartas)) {
 			return HandRank.FOUR_OF_A_KIND;
 		} else if (isAFullHouse(cartas)) {
 			return HandRank.FULL_HOUSE;
@@ -66,7 +66,7 @@ public class HandRanker {
 		return false;
 	}
 
-	private boolean isAFourOfAKing(ArrayList<String> cartas) {
+	private boolean isAFourOfAKind(ArrayList<String> cartas) {
 		// TODO Auto-generated method stub
 		return false;
 	}

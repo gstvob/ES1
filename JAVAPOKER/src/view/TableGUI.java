@@ -6,10 +6,9 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-
 import models.Table;
 
-public class TableGUI {
+public class TableGUI{
 
 	static final JLabel table = new JLabel(new ImageIcon("/home/gustavob/workspace/Poker/src/images/table_burned.png"));
 	static final JLabel playerIcon = new JLabel(new ImageIcon("/home/gustavob/workspace/Poker/src/images/jogador"));

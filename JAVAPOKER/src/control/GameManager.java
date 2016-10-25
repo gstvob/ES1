@@ -4,7 +4,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import Interfaces.Observer;
+
 import models.Bot;
 import models.Player;
 import models.Table;
@@ -19,7 +19,7 @@ import view.TableGUI;
  * se for a vez de um bot ele vai fazer as operações do bot para ele decidir a jogada.
  */
 
-public class GameManager extends Thread implements Observer{
+public class GameManager extends Thread {
 
 	private Bot[] bots;
 	private PlayerOptions player0;
@@ -42,9 +42,10 @@ public class GameManager extends Thread implements Observer{
 	private int blind;
 	private JPanel panel;
 	private JFrame frame;
-	//private boolean logged = false;
 	private boolean isRunning;
 
+	private FoldHandler fHandler;
+	
 	public GameManager(JPanel jpanel, JFrame _frame, Player jogador) {
 		panel = jpanel;
 		frame = _frame;
@@ -54,17 +55,16 @@ public class GameManager extends Thread implements Observer{
 		int numeroDeBots = tableG.getBotsNumber();
 		int fichas = tableG.getFichas();
 
-		player.registerInterest(this);
 		bots = new Bot[numeroDeBots];
-		
+
 		for (int i = 0; i < numeroDeBots; i++) {
 			bots[i] = new Bot(fichas);
-			bots[i].registerInterest(this);
 		}
 
 		player = jogador;
 		jogador.addFichas(fichas);
 		
+		fHandler = new FoldHandler(player, bots);
 		mesa = new Table(numeroDeBots, fichas);
 		mesa.getDeck().shuffle();
 		
@@ -263,16 +263,11 @@ public class GameManager extends Thread implements Observer{
 			isRunning = false;
 		}
 	}
-	public void sendNotify(boolean saiu) {
-		if (saiu == true) {
-			// significa que o player deu fold então tira as cartas da mão dele.
-			//fazer um método para tirar as cartas dependendo de quem deu o fold é claro.
-			// Esse método vai tar na classe do TableGUI.
-			
-		} else {
-			// significa que o player ta de volta ao jogo então coloca as cartas dele na mão.
-			// quando começar uma nova rodada, os que deram fold vão receber cartas novamente então eles irão chamar aqui denovo.
-		}
+	public FoldHandler getfHandler() {
+		return fHandler;
+	}
+	public void setfHandler(FoldHandler fHandler) {
+		this.fHandler = fHandler;
 	}
 }
 
