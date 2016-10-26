@@ -18,6 +18,19 @@ public class Table {
 		deck = new Deck();
 		bots = new Bot[_botsNumber];
 	}
+	public void flop() {
+		this.cardsInTable[0] = deck.giveCards();
+		this.cardsInTable[1] = deck.giveCards();
+		this.cardsInTable[2] = deck.giveCards();
+	}
+	public void turnRiver() {
+		if (this.cardsInTable[3] == null) {
+			this.cardsInTable[3] = deck.giveCards();
+		} else {
+			this.cardsInTable[4] = deck.giveCards();
+		}
+	}
+	
 	public Deck getDeck() {
 		return deck;
 	}
@@ -56,18 +69,6 @@ public class Table {
 	}
 	public void setBiggestBet(int biggestBet) {
 		this.biggestBet = biggestBet;
-	}
-	public void flop() {
-		this.cardsInTable[0] = deck.giveCards();
-		this.cardsInTable[1] = deck.giveCards();
-		this.cardsInTable[2] = deck.giveCards();
-	}
-	public void turnRiver() {
-		if (this.cardsInTable[3] == null) {
-			this.cardsInTable[3] = deck.giveCards();
-		} else {
-			this.cardsInTable[4] = deck.giveCards();
-		}
 	}
 	
 }

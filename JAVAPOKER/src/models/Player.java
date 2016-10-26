@@ -19,7 +19,7 @@ public class Player implements Subject {
 	private String senha;
 	private String email;
 	private String recoverW;
-	
+	private String[] bestHand;
 	private int totalWins;
 	
 	private String cartasNaMesa;
@@ -38,11 +38,13 @@ public class Player implements Subject {
 		folded = false;
 		observers = new Vector<Observer>();
 	}
-	public boolean canPass(int biggestBet) {
+
+	public void giveOptions(int biggestBet) {
 		if (biggestBet <= bet) {
-			return true;
+			observers.elementAt(0).sendNotify(true);
+		} else {
+			observers.elementAt(0).sendNotify(false);
 		}
-		return false;
 	}
 	public Hand getHand() {
 		return mao;
@@ -120,5 +122,11 @@ public class Player implements Subject {
 	}
 	public void registerInterest(Observer ob) {
 		observers.addElement(ob);
+	}
+	public String[] getBestHand() {
+		return bestHand;
+	}
+	public void setBestHand(String[] bestHand) {
+		this.bestHand = bestHand;
 	}
 }
